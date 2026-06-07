@@ -28,21 +28,22 @@ export class InternshipMatcher {
   }
 
   /**
-   * Jaccard Similarity Algorithm: |A ∩ B| / |A ∪ B|
-   * O(min(m, n)) where m, n are sizes of skill sets
+   * Coverage Score: |A ∩ B| / |B|
+   * Measures what fraction of the job's REQUIRED skills (B) the student (A) covers.
+   * Unlike Jaccard, this does NOT penalise students for knowing extra skills.
+   * O(min(m, n)) where m, n are sizes of skill sets.
    */
   calculateSimilarity(studentSkills, requiredSkills) {
     const studentSet = new Set(studentSkills.map(s => s.toLowerCase()));
     const requiredSet = new Set(requiredSkills.map(s => s.toLowerCase()));
 
+    if (requiredSet.size === 0) return 0;
+
     const intersection = new Set(
       [...studentSet].filter(skill => requiredSet.has(skill))
     );
-    
-    const union = new Set([...studentSet, ...requiredSet]);
 
-    if (union.size === 0) return 0;
-    return intersection.size / union.size;
+    return intersection.size / requiredSet.size;
   }
 
   /**
