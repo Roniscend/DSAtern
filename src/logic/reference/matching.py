@@ -1,12 +1,15 @@
 import math
 
-def jaccard_similarity(set1, set2):
+def coverage_score(student_skills: set, required_skills: set) -> float:
     """
-    Calculate Jaccard Similarity Score: |A ∩ B| / |A ∪ B|
+    Coverage Score: |A ∩ B| / |B|
+    Measures what fraction of the job's REQUIRED skills (B) the student (A) covers.
+    Unlike Jaccard, does NOT penalise students for knowing extra skills.
     """
-    intersection = len(set1.intersection(set2))
-    union = len(set1.union(set2))
-    return intersection / union if union > 0 else 0
+    if not required_skills:
+        return 0.0
+    intersection = len(student_skills.intersection(required_skills))
+    return intersection / len(required_skills)
 
 def binary_search_internships(sorted_internships, target_company):
     """
@@ -32,5 +35,6 @@ def binary_search_internships(sorted_internships, target_company):
 student_skills = {"Python", "SQL", "Data Analysis"}
 internship_skills = {"Python", "PyTorch", "SQL", "Machine Learning"}
 
-score = jaccard_similarity(student_skills, internship_skills)
-print(f"Matching Score: {score:.2f}")
+# Coverage: student covers 2/4 required skills = 0.50
+score = coverage_score(student_skills, internship_skills)
+print(f"Coverage Score: {score:.2f}")

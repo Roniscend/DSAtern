@@ -6,22 +6,19 @@
 #include <iterator>
 
 /**
- * Jaccard Similarity in C++
- * Uses std::set_intersection and std::set_union
+ * Coverage Score in C++: |A ∩ B| / |B|
+ * Measures what fraction of the job's REQUIRED skills the student covers.
+ * Unlike Jaccard, does NOT penalise knowing extra skills.
  */
-double calculateJaccard(std::set<std::string> set1, std::set<std::string> set2) {
+double calculateCoverage(std::set<std::string> studentSkills, std::set<std::string> requiredSkills) {
+    if (requiredSkills.empty()) return 0.0;
+
     std::vector<std::string> intersect;
-    std::set_intersection(set1.begin(), set1.end(),
-                          set2.begin(), set2.end(),
+    std::set_intersection(studentSkills.begin(), studentSkills.end(),
+                          requiredSkills.begin(), requiredSkills.end(),
                           std::back_inserter(intersect));
 
-    std::vector<std::string> uni;
-    std::set_union(set1.begin(), set1.end(),
-                   set2.begin(), set2.end(),
-                   std::back_inserter(uni));
-
-    if (uni.empty()) return 0.0;
-    return (double)intersect.size() / (double)uni.size();
+    return (double)intersect.size() / (double)requiredSkills.size();
 }
 
 /**
@@ -49,6 +46,7 @@ int main() {
     std::set<std::string> student = {"React", "JavaScript"};
     std::set<std::string> job = {"React", "JavaScript", "Tailwind"};
     
-    std::cout << "Match Score: " << calculateJaccard(student, job) << std::endl;
+    // student covers 2 of 3 required skills => 0.666...
+    std::cout << "Coverage Score: " << calculateCoverage(student, job) << std::endl;
     return 0;
 }
